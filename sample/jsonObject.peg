@@ -3,12 +3,18 @@ TopLevel
 		
 BeginArray
 		= WS '[' WS;
+		
+BeginArrayType
+		= WS '<' WS;
 			
 BeginClass
 		= WS '{' WS;
 			
 EndArray
 		= WS ']' WS;
+
+EndArrayType
+		= WS '>' WS;
 			
 EndClass
 		= WS '}' WS;
@@ -38,8 +44,11 @@ Key
 		= StringType WS << String #string >>
 		/ NumberType WS << String #number >> 
 		/ BooleanType WS << String #boolean >>
-		/ ArrayType WS << '<' WS (StringType@ / NumberType@ / BooleanType@ / ArrayType Array@ / ClassType@ ) WS '>' WS ArrayKey@  #array >>
+		/ ArrayType << Element ArrayKey@  #array >>
 		/ << ClassName@ WS ObjectKey@ WS #Class >>;
+
+Element
+		= BeginArrayType (StringType@ / NumberType@ / BooleanType@ / ArrayType Array@ / ClassType@ ) EndArrayType;
 
 ClassType
 		= << ClassName #Class >>;
@@ -54,7 +63,7 @@ ArrayKey
 		= << String #key >>;
 
 Array
-		= WS << ( StringType@ / NumberType@ / ArrayType Array@ ) #array >>;
+		= BeginArrayType<< ( StringType@ / NumberType@ / ArrayType Array@ ) EndArrayType #array >>;
 
 Type
 		= <<(StringType

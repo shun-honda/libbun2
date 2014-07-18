@@ -20,7 +20,7 @@ public class JsonPegGenerator {
 			switch (node.AST[i].tag) {
 			case "#class":
 				index = this.classNameMap.get(node.AST[i].AST[0].getText());
-				source.sourceText += "Object"+ index +" = << BeginObject Value" + index + "@ EndObject #object>>;\n\n";
+				source.sourceText += "Object"+ index +" = << BeginObject Value" + index + " EndObject #object>>;\n\n";
 				source = generate(source,node.AST[i], index);
 				break;
 			
@@ -65,15 +65,15 @@ public class JsonPegGenerator {
 				break;
 				
 			case "#array":
-				if(node.AST[i].AST.length == 1 && this.arrayCount == 0) {
+				if(node.AST[i].AST[0].tag.equals("#type") && this.arrayCount == 0) {
 					source.sourceText += "Member" + index + "_" + count + " = <<Key" + index + "_" + count + "@ NameSeparator Array"+ index + "_" + arrayCount +"@ #member >>;\n\n";
 					source.sourceText += "Array" + index + "_" + arrayCount + " = BeginArray << ( " + node.AST[i].AST[0].getText() + "@ ( ValueSeparator " + node.AST[i].AST[0].getText() + "@ )* )? #array >> EndArray;\n\n"
 										+ "Key" + index + "_" + count + " = << QuotationMark \"" + node.AST[i].AST[1].getText() + "\" QuotationMark #key >>;\n\n";
 					arrayCount++;
 				}
-				else if(node.AST[i].AST.length == 1) {
+				else if(node.AST[i].AST[0].tag.equals("#type")) {
 					arrayCount = this.arrayCount;
-					source.sourceText += "Array" + index + "_" + arrayCount + " = BeginArray << ( " + node.AST[0].getText() + "@ ( ValueSeparator " + node.AST[0].getText() + "@ )* )? #array >> EndArray;\n\n";
+					source.sourceText += "Array" + index + "_" + arrayCount + " = BeginArray << ( " + node.AST[i].AST[0].getText() + "@ ( ValueSeparator " + node.AST[i].AST[0].getText() + "@ )* )? #array >> EndArray;\n\n";
 					this.arrayCount++;
 					i++;
 				}
@@ -134,14 +134,34 @@ public class JsonPegGenerator {
 			for (int j = 0; j < member.AST.length; j++) {
 				if(member.AST[j].tag.equals("#Class")) {
 					if(this.classNameMap.hasKey(member.AST[j].AST[0].getText())) { //className
-						if(this.classNameMap.get(member.AST[j].AST[0].getText()) != 0) {
+						if(topClass == null) {
 							topClass = node.AST[i].AST[0].getText();
+							break;
 						}
+						else if (topClass.equals(member.AST[j].AST[0].getText())){
+							topClass = node.AST[i].AST[0].getText();
+							break;
+						}
+					}
+					else if(topClass == null) {
+						topClass = node.AST[i].AST[0].getText();
 						break;
 					}
-					else {
+				}
+				else if(member.AST[j].tag.equals("#array") && member.AST[j].AST[0].tag.equals("#Class")) {
+					if(this.classNameMap.hasKey(member.AST[j].AST[0].getText())) { //className
+						if(topClass == null) {
+							topClass = node.AST[i].AST[0].getText();
+							break;
+						}
+						else if (topClass.equals(member.AST[j].AST[0].getText())){
+							topClass = node.AST[i].AST[0].getText();
+							break;
+						}
+					}
+					else if(topClass == null) {
 						topClass = node.AST[i].AST[0].getText();
-						this.classNameMap.put(member.AST[j].AST[0].getText(), 0);
+						break;
 					}
 				}
 			}
