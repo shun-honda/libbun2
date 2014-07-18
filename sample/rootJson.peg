@@ -36,7 +36,13 @@ Boolean
 		= << (True / False) #boolean >>;
 				
 Array
-		= BeginArray << ( Object0@ ( ValueSeparator Object0@ )* )? #array >> EndArray;
+		= BeginArray << ( Object@ ( ValueSeparator Object@ )* )? #array >> EndArray;
+		
+Object
+		= BeginObject << Member@ #object >> EndObject;
+		
+Member
+		= << QuotationMark Name0@ QuotationMark NameSeparator Object0@ #member >>;
 		
 Number
 		= << Minus? Int Frac? Exp? #number >>;
