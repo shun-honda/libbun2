@@ -42,7 +42,7 @@ Object
 		= BeginObject << Member@ #object >> EndObject;
 		
 Member
-		= << QuotationMark Name0@ QuotationMark NameSeparator Object0@ #member >>;
+		= << QuotationMark Key0@ QuotationMark NameSeparator Object0@ #member >>;
 		
 Number
 		= << Minus? Int Frac? Exp? #number >>;

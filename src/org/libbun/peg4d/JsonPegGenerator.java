@@ -22,18 +22,9 @@ public class JsonPegGenerator {
 				index = this.classNameMap.get(node.AST[i].AST[0].getText());
 				source.sourceText += "Object"+ index +" = << BeginObject Value" + index + " EndObject #object>>;\n\n";
 				source = generate(source,node.AST[i], index);
-				break;
-			
-			/*case "#main":
-				source.sourceText += "Object0 = BeginObject << Member0@  #object >> EndObject;\n\n";
-				source.sourceText += "Member0 = << Object0_0@ #member>>;\n\n";
-				source.sourceText += "Object0" + "_" + count + " = << QuotationMark Name0@ QuotationMark NameSeparator BeginObject Value0@ EndObject #object >>;\n\n";
-				source = generate(source,node.AST[i], 0);
-				break;*/
-				
-			case "#name":
-				index = this.classNameMap.get(node.AST[i].getText());
-				source.sourceText += "Name" + index + " = << \"" + node.AST[i].getText() + "\" #string >>;\n\n";
+				if(index == 0) {
+					source.sourceText += "Key0 = << \"" + node.AST[i].AST[0].getText() + "\" #string >>;\n\n";
+				}
 				break;
 				
 			case "#member":
