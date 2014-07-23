@@ -34,7 +34,6 @@ public class JsonPegGenerator {
 					source.sourceText += " Member" + index + "_" + j + "@ ValueSeparator";
 				}
 				source.sourceText += " Member" + index + "_" + (node.AST[i].AST.length - 1) + "@;\n\n";
-				source.sourceText += "";
 				break;
 				
 			case "#string":
